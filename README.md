@@ -13,3 +13,4 @@ conda activate face_detector
 fastapi dev main.py
 ```
 It runs locally on: http://127.0.0.1:8000 
+Doc and testing available at http://127.0.0.1:8000/docs
