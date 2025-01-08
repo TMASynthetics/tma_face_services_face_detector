@@ -1,15 +1,58 @@
 import cv2
+from typing import Tuple
+import numpy as np
 
 class Preprocessing:
-    def __init__(self, image_path, yolov8n_size):
+    """
+    A class used to handle image preprocessing for YOLOv8n model.
+    Attributes
+    ----------
+    image_path : str
+        The file path to the image to be processed.
+    yolov8n_size : int
+        The size to which the image will be resized for YOLOv8n model.
+    Methods
+    -------
+    load_image() -> 'numpy.ndarray':
+        Loads the image from the given file path.
+    preprocess_image(img: 'numpy.ndarray') -> Tuple['numpy.ndarray', float, float]:
+        Preprocesses the image for YOLOv8n model, including resizing, normalizing, and changing data layout.
+    """
+    def __init__(self, image_path: str, yolov8n_size: int):
+        """
+        Parameters
+        ----------
+        image_path : str
+            The file path to the image to be processed.
+        yolov8n_size : int
+            The size to which the image will be resized for YOLOv8n model.
+        """
         self.image_path = image_path
         self.yolov8n_size = yolov8n_size
 
-    def load_image(self):
+    def load_image(self) -> np.ndarray:
+        """
+        Loads the image from the given file path.
+        Returns
+        -------
+        numpy.ndarray
+            The loaded image.
+        """
         img = cv2.imread(self.image_path)
         return img
-
-    def preprocess_image(self, img):
+    
+    def preprocess_image(self, img: np.ndarray) -> Tuple[np.ndarray, float, float]:
+        """
+        Preprocesses the image for YOLOv8n model, including resizing, normalizing, and changing data layout.
+        Parameters
+        ----------
+        img : numpy.ndarray
+            The image to be preprocessed.
+        Returns
+        -------
+        Tuple[numpy.ndarray, float, float]
+            The preprocessed image, the width ratio, and the height ratio.
+        """
         # Refer to https://github.com/TMASynthetics/facefusion/blob/main/facefusion/face_detector.py#L231
         # To refine the preprocessing
         height, width, _ = img.shape
