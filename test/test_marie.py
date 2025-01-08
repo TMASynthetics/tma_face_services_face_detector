@@ -18,7 +18,10 @@ pipeline = Pipeline(IMAGE_PATH, MODEL_PATH, YOLOV8N_SIZE, DETECTION_THRESHOLD)
 results = pipeline.run()
 
 # Print or use the results
-print(results)
+for result in results:
+    print("Bounding box:", result[0])
+    print("Score:", result[1])
+    print("Landmarks:", result[2])
 
 output_path = "test/test_data/marie_annotated.jpeg"
 # Draw the results on the image
