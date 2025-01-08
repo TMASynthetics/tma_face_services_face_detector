@@ -22,5 +22,10 @@ pipeline = Pipeline(IMAGE_PATH, MODEL_PATH, YOLOV8N_SIZE, DETECTION_THRESHOLD)
 results = pipeline.run()
 
 # Print or use the results
-print(results)
+for result in results:
+    print("Bounding box:", result[0])
+    print("Score:", result[1])
+    print("Landmarks:", result[2])
 ```
+
+See "test/test_marie.py" for a similar running exemple with drawing the results on the image.
