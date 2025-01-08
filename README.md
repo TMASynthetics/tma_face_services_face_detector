@@ -3,11 +3,9 @@ Isolate face detector processor into one microservice.
 
 # Installation
 ```bash
-conda init --all
-conda env create -f environment.yml
-conda activate face_detector
-
 uv venv --python 3.12
+uv pip install -r requirements.txt
 ```
 
 # Run
+Look at the main.py file for a running exemple.
