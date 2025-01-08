@@ -6,11 +6,8 @@ Isolate face detector processor into one microservice.
 conda init --all
 conda env create -f environment.yml
 conda activate face_detector
+
+uv venv --python 3.12
 ```
 
 # Run
-```bash
-fastapi dev main.py
-```
-It runs locally on: http://127.0.0.1:8000 
-Doc and testing available at http://127.0.0.1:8000/docs
