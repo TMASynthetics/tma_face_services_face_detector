@@ -7,11 +7,13 @@ This project implements a face detection pipeline using a YOLO-based model. The 
 ├── README.md
 ├── requirements.txt
 ├── src/
-│   ├── __init__.py
+│   ├── inference.py
 │   ├── pipeline.py
-│   └── utils.py
+│   ├── posprocessing.py
+│   └── preprocessing.py
 └── test/
-    ├── __init__.py
+    ├── test_data/
+    ├── helper_functions.py
     └── test_marie.py
 ```
 
