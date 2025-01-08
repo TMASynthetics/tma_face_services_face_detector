@@ -1,4 +1,4 @@
-# tma_face_services_face_detector
+# Face Detector Service
 This project implements a face detection pipeline using a YOLO-based model. The pipeline includes preprocessing, inference, and postprocessing steps to detect faces in images.
 
 # Project Structure
