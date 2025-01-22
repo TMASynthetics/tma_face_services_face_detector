@@ -69,12 +69,11 @@ Granted that you have the input, here is what is going on step by step when you 
    ```mermaid
    graph LR
       subgraph Inputs
-      II[Input Image] --> FD[Face Detector]
+      RJ[Request JSON] --> II[Input Image]
       end
-      
+
       subgraph Preprocessing
-      FD --> LII[Loaded Input Image]
-      LII --> Normalize
+      II --> Normalize
       Normalize --> Resize
       Resize --> PI[Preprocessed Image] & AR[Aspect Ratio]
       end
