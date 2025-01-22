@@ -6,6 +6,8 @@ This project implements a face detection pipeline using a YOLO-based model. The 
 /home/quillaur/bethel/tma_face_services_face_detector/
 ├── README.md
 ├── requirements.txt
+├── config/
+│   ├── models.py
 ├── src/
 │   ├── inference.py
 │   ├── pipeline.py
@@ -13,6 +15,8 @@ This project implements a face detection pipeline using a YOLO-based model. The 
 │   └── preprocessing.py
 └── test/
     ├── test_data/
+    |   ├── request.json
+    |   └── marie.jpeg
     ├── helper_functions.py
     └── test_marie.py
 ```
