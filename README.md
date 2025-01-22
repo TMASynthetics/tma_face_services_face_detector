@@ -58,7 +58,7 @@ with open(request_data["args"]["output_image_data"], 'w') as outfile:
 print("Number of faces:", len(results["bounding_boxes"]))
 print("Bounding box:", results["bounding_boxes"])
 print("Score:", results["scores"])
-print("Landmarks:", results["landmarks"])
+print("Landmarks:", results["landmarks"]["5"])
 ```
 
 See "test/test_marie.py" for a similar running exemple with drawing the results on the image.

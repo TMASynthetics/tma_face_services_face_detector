@@ -60,7 +60,9 @@ class Postprocessing:
         return {
                 "bounding_boxes": non_overlapping_boxes, 
                 "scores": non_overlapping_scores, 
-                "landmarks": non_overlapping_landmarks
+                "landmarks": {
+                    "5": non_overlapping_landmarks
+                }
             }
     
     def filter_overlapping_boxes(self, bounding_boxes: List[np.ndarray], face_scores: List[float], iou_threshold: float = 0.7) -> set:

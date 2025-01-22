@@ -29,9 +29,9 @@ with open(request_data["args"]["output_image_data"], 'w') as outfile:
 
 # Print or use the results
 print("Number of faces:", len(results["bounding_boxes"]))
-print("Bounding box:", results["bounding_boxs"])
+print("Bounding box:", results["bounding_boxes"])
 print("Score:", results["scores"])
-print("Landmarks:", results["landmarks"])
+print("Landmarks:", results["landmarks"]["5"])
 
 output_path = "test/test_data/marie_annotated.jpeg"
 # Draw the results on the image
