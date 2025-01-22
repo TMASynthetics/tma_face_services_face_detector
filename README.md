@@ -67,7 +67,7 @@ See "test/test_marie.py" for a similar running exemple with drawing the results 
 Granted that you have the input, here is what is going on step by step when you call pipeline.run():
 
    ```mermaid
-   graph LR
+   graph TD
       subgraph Inputs
       RJ[Request JSON] --> II[Input Image]
       end
