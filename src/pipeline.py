@@ -1,7 +1,8 @@
 from src.preprocessing import Preprocessing
 from src.inference import Inference
 from src.postprocessing import Postprocessing
-from typing import Any, List, Tuple
+from typing import List, Tuple
+import numpy as np
 
 class Pipeline:
     """
@@ -11,19 +12,13 @@ class Pipeline:
     -----------
     image_path : str
         Path to the input image.
-    model_path : str
-        Path to the YOLOv8 model.
-    yolov8n_size : Tuple[int, int]
-        Size of the YOLOv8 input.
-    detection_threshold : float
-        Threshold for detection confidence.
 
     Methods:
     --------
-    run() -> List[Any]:
+    run() -> Tuple[List[np.ndarray], List[float], List[np.ndarray]]:
         Executes the pipeline: preprocessing, inference, and postprocessing.
     """
-    def __init__(self, image_path: str, model_path: str, yolov8n_size: Tuple[int, int], detection_threshold: float):
+    def __init__(self, image_path: str):
         """
         Constructs all the necessary attributes for the Pipeline object.
 
@@ -31,39 +26,44 @@ class Pipeline:
         -----------
         image_path : str
             Path to the input image.
-        model_path : str
-            Path to the YOLOv8 model.
-        yolov8n_size : Tuple[int, int]
-            Size of the YOLOv8 input.
-        detection_threshold : float
-            Threshold for detection confidence.
         """
         self.image_path = image_path
-        self.model_path = model_path
-        self.yolov8n_size = yolov8n_size
-        self.detection_threshold = detection_threshold
 
-    def run(self) -> List[Any]:
+    def run(self) -> Tuple[List[np.ndarray], List[float], List[np.ndarray]]:
         """
         Executes the pipeline: preprocessing, inference, and postprocessing.
 
         Returns:
         --------
-        List[Any]
+        Tuple[List[np.ndarray], List[float], List[np.ndarray]]
             The results of the face detection.
         """
         # Preprocessing
-        preprocessor = Preprocessing(self.image_path, self.yolov8n_size)
+        preprocessor = Preprocessing(self.image_path)
         img = preprocessor.load_image()
         input_data, ratio_width, ratio_height = preprocessor.preprocess_image(img)
 
         # Inference
-        inference = Inference(self.model_path)
+        inference = Inference()
         outputs = inference.run_inference(input_data)
 
         # Postprocessing
-        postprocessor = Postprocessing(self.detection_threshold)
+        postprocessor = Postprocessing()
         results = postprocessor.process_outputs(outputs, ratio_width, ratio_height)
+
+        # For JSON serialisation purpose, we need to convert numpy arrays to lists
+        # Transform any numpy array to list in the self.response dict
+        def transform_numpy_to_list(obj):
+            if isinstance(obj, dict):
+                return {k: transform_numpy_to_list(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [transform_numpy_to_list(i) for i in obj]
+            elif isinstance(obj, np.ndarray):
+                return obj.tolist()
+            else:
+                return obj
+		
+        results = transform_numpy_to_list(results)
 
         # Return or print the results
         return results

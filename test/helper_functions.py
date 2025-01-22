@@ -3,7 +3,7 @@ import cv2
 # Function to draw boxes, scores, and landmarks
 def draw_results(image_path, results):
     image = cv2.imread(image_path)
-    for box, score, landmarks in zip(*results):
+    for box, score, landmarks in zip(results["bounding_boxs"], results["scores"], results["landmarks"]):
         print(box[0], box[1], box[2], box[3])
         # Draw the bounding box
         cv2.rectangle(image, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), (0, 255, 0), 2)

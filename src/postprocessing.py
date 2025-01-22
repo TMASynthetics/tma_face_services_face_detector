@@ -1,22 +1,21 @@
 import numpy as np
-from typing import List, Tuple, Any
+from typing import List, Tuple
+from config.models import MODELS
 
 
 class Postprocessing:
-    def __init__(self, detection_threshold: float):
+    def __init__(self):
         """
         Initialize the Postprocessing class with a detection threshold.
-        Args:
-            detection_threshold (float): The threshold above which detections are considered valid.
         """
-        self.detection_threshold = detection_threshold
+        self.detection_threshold = MODELS["yoloface_8n"]["detection_threshold"]
 
-    def process_outputs(self, outputs: Any, ratio_width: float, ratio_height: float) -> Tuple[List[np.ndarray], List[float], List[np.ndarray]]:
+    def process_outputs(self, outputs: np.ndarray, ratio_width: float, ratio_height: float) -> Tuple[List[np.ndarray], List[float], List[np.ndarray]]:
         """
         Process the outputs from the face detector model, filter detections based on the detection threshold,
         and adjust bounding boxes and landmarks according to the given width and height ratios.
         Args:
-            outputs (Any): The raw outputs from the face detector model.
+            outputs (np.ndarray): The raw outputs from the face detector model.
             ratio_width (float): The ratio to adjust the width of the bounding boxes.
             ratio_height (float): The ratio to adjust the height of the bounding boxes.
         Returns:
@@ -57,7 +56,11 @@ class Postprocessing:
         non_overlapping_scores = [face_scores[i] for i in indices_to_keep]
         non_overlapping_landmarks = [face_landmarks_5[i] for i in indices_to_keep]
 
-        return non_overlapping_boxes, non_overlapping_scores, non_overlapping_landmarks
+        return {
+                "bounding_boxs": non_overlapping_boxes, 
+                "scores": non_overlapping_scores, 
+                "landmarks": non_overlapping_landmarks
+            }
     
     def filter_overlapping_boxes(self, bounding_boxes: List[np.ndarray], face_scores: List[float], iou_threshold: float = 0.7) -> set:
         """

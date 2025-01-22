@@ -1,5 +1,6 @@
 import onnxruntime as ort
-from typing import Any, List
+import numpy as np
+from config.models import MODELS
 
 class Inference:
     """
@@ -14,32 +15,26 @@ class Inference:
 
     Methods
     -------
-    run_inference(input_data: Any) -> List[Any]
+    run_inference(input_data: np.ndarray) -> np.ndarray
         Runs inference on the provided input data and returns the model outputs.
     """
 
-    def __init__(self, model_path: str):
-        """
-        Parameters
-        ----------
-        model_path : str
-            The path to the pre-trained model file.
-        """
-        self.model_path = model_path
+    def __init__(self):
+        self.model_path = MODELS["yoloface_8n"]["path"]
         self.session = ort.InferenceSession(self.model_path)
 
-    def run_inference(self, input_data: Any) -> List[Any]:
+    def run_inference(self, input_data: np.ndarray) -> np.ndarray:
         """
         Runs inference on the provided input data and returns the model outputs.
 
         Parameters
         ----------
-        input_data : Any
+        input_data : np.ndarray
             The input data to run inference on.
 
         Returns
         -------
-        List[Any]
+        np.ndarray
             The outputs from the model inference.
         """
         input_name = self.session.get_inputs()[0].name

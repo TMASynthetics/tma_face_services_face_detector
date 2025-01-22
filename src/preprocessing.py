@@ -1,6 +1,7 @@
 import cv2
 from typing import Tuple
 import numpy as np
+from config.models import MODELS
 
 class Preprocessing:
     """
@@ -9,8 +10,6 @@ class Preprocessing:
     ----------
     image_path : str
         The file path to the image to be processed.
-    yolov8n_size : int
-        The size to which the image will be resized for YOLOv8n model.
     Methods
     -------
     load_image() -> 'numpy.ndarray':
@@ -18,7 +17,7 @@ class Preprocessing:
     preprocess_image(img: 'numpy.ndarray') -> Tuple['numpy.ndarray', float, float]:
         Preprocesses the image for YOLOv8n model, including resizing, normalizing, and changing data layout.
     """
-    def __init__(self, image_path: str, yolov8n_size: int):
+    def __init__(self, image_path: str):
         """
         Parameters
         ----------
@@ -28,7 +27,7 @@ class Preprocessing:
             The size to which the image will be resized for YOLOv8n model.
         """
         self.image_path = image_path
-        self.yolov8n_size = yolov8n_size
+        self.yolov8n_size = MODELS["yoloface_8n"]["size"][0]
 
     def load_image(self) -> np.ndarray:
         """

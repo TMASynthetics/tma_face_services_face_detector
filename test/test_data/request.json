@@ -1,0 +1,10 @@
+{
+    "args": {
+
+        "input_image_1": "test/test_data/marie.jpeg",
+        "output_image_data": "test/test_data/face_detector_output.json"
+    },
+
+    "debug": false
+
+}
