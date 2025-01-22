@@ -35,6 +35,7 @@ class Postprocessing:
         if np.any(keep_indices):
             bounding_box_raw, face_landmark_5_raw, score_raw = bounding_box_raw[keep_indices], face_landmark_5_raw[keep_indices], score_raw[keep_indices]
 
+            # Adjust the bounding boxes according to the width and height ratios
             for bounding_box in bounding_box_raw:
                 bounding_boxes.append(np.array(
                 [

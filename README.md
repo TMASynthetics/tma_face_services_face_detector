@@ -38,22 +38,56 @@ Here is an example:
 ```python
 from src.pipeline import Pipeline
 
-# Constants
-IMAGE_PATH = "your_image.jpeg"
-MODEL_PATH = "<where your model is>/yoloface_8n.onnx"
-YOLOV8N_SIZE = 640
-DETECTION_THRESHOLD = 0.75
+# Load the request data from the JSON file
+with open('test/test_data/request.json', 'r') as request_file:
+	request_data = json.load(request_file)
 
 # Create and run the pipeline
-pipeline = Pipeline(IMAGE_PATH, MODEL_PATH, YOLOV8N_SIZE, DETECTION_THRESHOLD)
+pipeline = Pipeline(request_data["args"]["input_image_1"])
 results = pipeline.run()
 
+# Write the output data to a JSON file
+with open(request_data["args"]["output_image_data"], 'w') as outfile:
+	json.dump(results, outfile)
+
 # Print or use the results
-for result in results:
-    print("Bounding box:", result[0])
-    print("Score:", result[1])
-    print("Landmarks:", result[2])
+print("Number of faces:", len(results["bounding_boxs"]))
+print("Bounding box:", results["bounding_boxs"])
+print("Score:", results["scores"])
+print("Landmarks:", results["landmarks"])
 ```
 
 See "test/test_marie.py" for a similar running exemple with drawing the results on the image.
+
+# Inside the pipeline
+Granted that you have the input, here is what is going on step by step when you call pipeline.run():
+
+   ```mermaid
+   graph LR
+      subgraph Inputs
+      II[Input Image] --> FD[Face Detector]
+      end
+      
+      subgraph Preprocessing
+      FD --> LII[Loaded Input Image]
+      LII --> Normalize
+      Normalize --> Resize
+      Resize --> PI[Preprocessed Image] & AR[Aspect Ratio]
+      end
+      
+      subgraph Inference
+      PI --> RFDI(Run Face Detector)
+      RFDI --> RBB[Raw Bounding Boxes] & RS[Raw Scores] & RFL5[Raw Face Landmarks 5]
+      end
+
+      subgraph Postprocessing
+      RBB & RS & RFL5 --> FDT[Filter by Detection Threshold]
+      FDT & AR --> ARA[Aspect Ratio Adjustement] 
+      ARA --> FOF[Filter Overlapping Faces]
+      end
+
+      subgraph Outputs
+      FOF --> BB[Bounding Boxes] & S[Scores] & L5[Landmarks 5]
+      end
+   ```
 
