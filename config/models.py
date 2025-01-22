@@ -1,4 +1,4 @@
-MODELS_DIR_PATH = "/home/quillaur/HDD-1TO/models/bethel"
+MODELS_DIR_PATH = ".../<path_to_model_dir>"
 
 MODELS = {
     "yoloface_8n":
