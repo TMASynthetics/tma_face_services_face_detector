@@ -28,7 +28,7 @@ with open(request_data["args"]["output_image_data"], 'w') as outfile:
 	json.dump(results, outfile)
 
 # Print or use the results
-print("Number of faces:", len(results["bounding_boxs"]))
+print("Number of faces:", len(results["bounding_boxes"]))
 print("Bounding box:", results["bounding_boxs"])
 print("Score:", results["scores"])
 print("Landmarks:", results["landmarks"])

@@ -58,7 +58,7 @@ class Postprocessing:
         non_overlapping_landmarks = [face_landmarks_5[i] for i in indices_to_keep]
 
         return {
-                "bounding_boxs": non_overlapping_boxes, 
+                "bounding_boxes": non_overlapping_boxes, 
                 "scores": non_overlapping_scores, 
                 "landmarks": non_overlapping_landmarks
             }
