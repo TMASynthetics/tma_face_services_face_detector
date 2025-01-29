@@ -61,7 +61,7 @@ print("Score:", results["scores"])
 print("Landmarks:", results["landmarks"]["5"])
 ```
 
-See "test/test_marie.py" for a similar running exemple with drawing the results on the image.
+See "test/test.py" for a similar running exemple with drawing the results on the image.
 
 # Inside the pipeline
 Granted that you have the input, here is what is going on step by step when you call pipeline.run():
