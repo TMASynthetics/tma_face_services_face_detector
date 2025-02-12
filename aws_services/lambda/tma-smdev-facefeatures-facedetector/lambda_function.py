@@ -1,48 +1,47 @@
 import logging
 import boto3
-import botocore
 import numpy as np
 import time
 from typing import Any, Dict, List, Tuple
 from numpy.typing import NDArray
 import cv2
 import json
-import base64
 import onnxruntime as ort
 
 # =============================
 # LOGGING CONFIGURATION
 # =============================
-logger = logging.getLogger()
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 # =============================
 # BOTO3 GLOBAL SESSION & CLIENTS
 # =============================
 # Create a global Boto3 session
-global_session = boto3.Session()
+# global_session = boto3.Session()
 
-# Advanced configuration for Boto3 clients
-config = botocore.config.Config(
-    max_pool_connections=50,  # Maximum number of connections to keep in the connection pool
-    tcp_keepalive=True,       # Enable TCP keep-alive
-    connect_timeout=5,        # Timeout in seconds for establishing a connection
-    read_timeout=60,          # Timeout in seconds for reading from a connection
-    retries={'max_attempts': 0}  # Disable automatic retries
-)
+# # Advanced configuration for Boto3 clients
+# config = botocore.config.Config(
+#     max_pool_connections=50,  # Maximum number of connections to keep in the connection pool
+#     tcp_keepalive=True,       # Enable TCP keep-alive
+#     connect_timeout=5,        # Timeout in seconds for establishing a connection
+#     read_timeout=60,          # Timeout in seconds for reading from a connection
+#     retries={'max_attempts': 0}  # Disable automatic retries
+# )
 
-# Create an S3 client using the global session and the advanced configuration
-s3_client = global_session.client("s3", config=config)
+# # Create an S3 client using the global session and the advanced configuration
+# s3_client = global_session.client("s3", config=config)
 
-# Create a SageMaker Runtime client using the global session and the advanced configuration
-sagemaker_runtime = global_session.client("sagemaker-runtime", config=config)
+# # Create a SageMaker Runtime client using the global session and the advanced configuration
+# sagemaker_runtime = global_session.client("sagemaker-runtime", config=config)
 
 # =============================
 # TYPES & CONSTANTS
 # =============================
 VisionFrame = NDArray[Any]
 
-MODELS_PATH = "/..."
+MODELS_PATH = "/home/quillaur/HDD-1TO/models/bethel"
 
 MODELS = {
     "yoloface_8n":
@@ -243,10 +242,10 @@ class Postprocessing:
 
 class Pipeline:
 
-    def run(self, image: VisionFrame) -> Tuple[List[np.ndarray], List[float], List[np.ndarray]]:
+    def run(self, source_image: VisionFrame) -> Tuple[List[np.ndarray], List[float], List[np.ndarray]]:
         # Preprocessing
         preprocessor = Preprocessing()
-        input_data, ratio_width, ratio_height = preprocessor.preprocess_image(image)
+        input_data, ratio_width, ratio_height = preprocessor.preprocess_image(source_image)
 
         # Inference
         inference = Inference()
@@ -286,6 +285,8 @@ def lambda_handler(event, context):
         # -------------------------------------------------------
         # STEP 1: Retrieve S3 information and parameters
         # -------------------------------------------------------
+        s3_client = boto3.client('s3')
+
         bucket_name = event.get("bucketName")
         # target_key = event.get("targetKey")
         source_key = event.get("sourceKey")
@@ -302,7 +303,7 @@ def lambda_handler(event, context):
         # -------------------------------------------------------
         # STEP 2: Download images from S3
         # -------------------------------------------------------
-        local_target_path = "/tmp/target.jpg"
+        # local_target_path = "/tmp/target.jpg"
         local_source_path = "/tmp/source.jpg"
 
         t0 = time.time()
@@ -334,7 +335,7 @@ def lambda_handler(event, context):
         # STEP 4: Execute the Face Enhancement pipeline
         # -------------------------------------------------------
         t0 = time.time()
-        pipeline = Pipeline(debug=True)
+        pipeline = Pipeline()
 
         # Note: The method signature below is an example.
         # In your full code, you may need to adapt to pass target_image, source_image, or other parameters.
@@ -361,7 +362,7 @@ def lambda_handler(event, context):
         logger.info(f"Result image uploaded to s3://{bucket_name}/{output_key}")
         output["output_key"] = output_key
 
-        output["message"] = "Face recognition done"
+        output["message"] = "Face detection done"
 
         overall_end = time.time()
         logger.info(f"Total Lambda execution time: {overall_end - overall_start:.4f} sec")
