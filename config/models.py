@@ -1,4 +1,4 @@
-MODELS_DIR_PATH = ".../<path_to_model_dir>"
+MODELS_DIR_PATH = "s3/models"
 
 MODELS = {
     "yoloface_8n":
