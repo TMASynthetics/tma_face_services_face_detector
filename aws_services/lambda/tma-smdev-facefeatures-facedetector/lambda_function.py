@@ -7,6 +7,7 @@ from numpy.typing import NDArray
 import cv2
 import json
 import onnxruntime as ort
+import requests
 
 # =============================
 # LOGGING CONFIGURATION
@@ -41,7 +42,7 @@ logger.setLevel(logging.INFO)
 # =============================
 VisionFrame = NDArray[Any]
 
-MODELS_PATH = "/home/quillaur/HDD-1TO/models/bethel"
+MODELS_PATH = ".../models"
 
 MODELS = {
     "yoloface_8n":
@@ -52,6 +53,31 @@ MODELS = {
         "detection_threshold": 0.75,
     }
 }
+
+# =============================
+# Helper Functions to debug
+# =============================
+
+# Function to draw boxes, scores, and landmarks
+def draw_results(image_path, results):
+    image = cv2.imread(image_path)
+    for box, score, landmarks in zip(results["bounding_boxes"], results["scores"], results["landmarks"]["5"]):
+        print(box[0], box[1], box[2], box[3])
+        # Draw the bounding box
+        cv2.rectangle(image, (int(box[0]), int(box[1])), (int(box[2]), int(box[3])), (0, 255, 0), 2)
+
+        # Draw the score
+        cv2.putText(image, f"{score:.2f}", (int(box[0]), int(box[1]) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+
+        # Draw the landmarks
+        for (x, y) in landmarks:
+            cv2.circle(image, (int(x), int(y)), 5, (0, 0, 255), -1)
+
+    return image
+
+def save_image(image, output_path):
+    # Save the annotated image
+    cv2.imwrite(output_path, image)
 
 
 # =============================
@@ -138,9 +164,11 @@ class Inference:
         np.ndarray
             The outputs from the model inference.
         """
-        input_name = self.session.get_inputs()[0].name
-        outputs = self.session.run(None, {input_name: input_data[None, :]})
-        return outputs
+        request_data = {"data": input_data.tolist()}
+        response = requests.post(f"http://0.0.0.0:8000/predict", json=request_data)
+        if response.status_code != 200:
+            raise RuntimeError(f"Inference request failed: {response.text}")
+        return np.array(response.json()["predictions"]) 
 
 
 class Postprocessing:
@@ -363,6 +391,10 @@ def lambda_handler(event, context):
         output["output_key"] = output_key
 
         output["message"] = "Face detection done"
+
+        # Optional but useful for debugging
+        # annotated_image = draw_results('test/test_data/marie.jpeg', results)
+        # save_image(annotated_image, "marie_annotated.jpeg")
 
         overall_end = time.time()
         logger.info(f"Total Lambda execution time: {overall_end - overall_start:.4f} sec")

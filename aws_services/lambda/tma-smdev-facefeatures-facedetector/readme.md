@@ -14,3 +14,14 @@ models/
     │   └── model.onnx
     └── config.pbtxt
 
+sudo podman --root /home/quillaur/HDD-1TO/containers/storage --runroot /home/quillaur/HDD-1TO/containers/runroot pull nvcr.io/nvidia/tritonserver:25.01-py3
+
+sudo podman --root /home/quillaur/HDD-1TO/containers/storage --runroot /home/quillaur/HDD-1TO/containers/runroot run --device nvidia.com/gpu=all -it --rm nvcr.io/nvidia/tritonserver:25.01-py3
+sudo podman --root /home/quillaur/HDD-1TO/containers/storage --runroot /home/quillaur/HDD-1TO/containers/runroot run -it --rm nvcr.io/nvidia/tritonserver:25.01-py3
+
+sudo podman --root /home/quillaur/HDD-1TO/containers run \
+  --rm -p 8001:8001 \
+  --gpus all \
+  -v /home/quillaur/HDD-1TO/models/bethel:/models \
+  nvcr.io/nvidia/tritonserver:25.01-py3 \
+  tritonserver --model-repository=/models
